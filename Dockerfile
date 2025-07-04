@@ -55,4 +55,8 @@ ENV DOCKER_ENV=true
 
 EXPOSE 8080
 
-ENTRYPOINT ["/bin/bash", "-c", "npx prisma generate && npx prisma migrate deploy && npm run start:prod"]
+# Cria um link simbólico para o Prisma encontrar o schema
+RUN ln -s /evolution/prisma/postgresql-schema.prisma /evolution/prisma/schema.prisma || true
+
+# E então use este ENTRYPOINT:
+ENTRYPOINT ["/bin/bash", "-c", "cd /evolution && npx prisma generate && npx prisma db push --skip-generate && npm run start:prod"]
